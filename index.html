@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Log Lamaran Kerja</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,500;6..72,600&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #F7F6F2;
+      --surface: #FFFFFF;
+      --surface-subtle: #F1EFEA;
+      --border: #E4E1D8;
+      --border-strong: #CFCBC0;
+      --ink: #171716;
+      --ink-muted: #66635B;
+      --accent: #1B3B2B;
+      --accent-hover: #132B1F;
+      --accent-soft: #EBF1EE;
+      --radius: 6px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--ink);
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 20px;
+      padding-bottom: 28px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 24px;
+    }
+
+    .title-group h1 {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 32px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      color: var(--ink);
+    }
+
+    .subtitle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 6px;
+      color: var(--ink-muted);
+      font-size: 13px;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background-color: #9CA3AF;
+    }
+
+    .status-dot.connected {
+      background-color: #15803D;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Buttons & Inputs */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 9px 16px;
+      border-radius: var(--radius);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1px solid var(--border-strong);
+      background: var(--surface);
+      color: var(--ink);
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .btn:hover {
+      background: var(--surface-subtle);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #FFFFFF;
+      border-color: var(--accent);
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      border-color: var(--accent-hover);
+    }
+
+    /* Toolbar */
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .search-box {
+      position: relative;
+      flex: 1;
+      min-width: 240px;
+      max-width: 380px;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 9px 12px 9px 34px;
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius);
+      background: var(--surface);
+      font-family: inherit;
+      font-size: 13px;
+      color: var(--ink);
+      outline: none;
+    }
+
+    .search-box input:focus {
+      border-color: var(--accent);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 11px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--ink-muted);
+      pointer-events: none;
+    }
+
+    .meta-count {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--ink-muted);
+    }
+
+    /* Banner peringatan jika URL belum diisi */
+    .setup-banner {
+      display: none;
+      padding: 12px 16px;
+      margin-bottom: 20px;
+      background: #FEF9EC;
+      border: 1px solid #EBD59B;
+      border-radius: var(--radius);
+      font-size: 13px;
+      color: #634B12;
+    }
+
+    /* Table Wrapper */
+    .table-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    th {
+      padding: 12px 16px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--ink-muted);
+      background: var(--surface-subtle);
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tbody tr:hover {
+      background-color: #FAF9F6;
+    }
+
+    .company-name {
+      font-weight: 600;
+      color: var(--ink);
+      font-size: 14px;
+    }
+
+    .role-title {
+      color: var(--ink-muted);
+      font-size: 13px;
+      margin-top: 2px;
+    }
+
+    .mono {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+    }
+
+    .link-editorial {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+      border-bottom: 1px solid transparent;
+    }
+
+    .link-editorial:hover {
+      border-bottom-color: var(--accent);
+    }
+
+    .cv-tag {
+      display: inline-block;
+      padding: 2px 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11.5px;
+      background: var(--surface-subtle);
+      border: 1px solid var(--border-strong);
+      border-radius: 4px;
+      color: var(--ink);
+    }
+
+    .contact-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .btn-detail {
+      padding: 5px 10px;
+      font-size: 12px;
+      background: transparent;
+      border: 1px solid var(--border-strong);
+      border-radius: 4px;
+      color: var(--ink);
+      cursor: pointer;
+    }
+
+    .btn-detail:hover {
+      background: var(--surface-subtle);
+    }
+
+    /* Slide-Over Drawer */
+    .drawer-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(23, 23, 22, 0.32);
+      display: none;
+      justify-content: flex-end;
+      z-index: 50;
+    }
+
+    .drawer-backdrop.open {
+      display: flex;
+    }
+
+    .drawer {
+      width: 100%;
+      max-width: 480px;
+      background: var(--surface);
+      height: 100%;
+      padding: 32px;
+      overflow-y: auto;
+      border-left: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .drawer-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .drawer-title {
+      font-family: 'Newsreader', serif;
+      font-size: 24px;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: var(--ink-muted);
+      padding: 4px;
+    }
+
+    .detail-section {
+      margin-top: 22px;
+    }
+
+    .detail-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--ink-muted);
+      margin-bottom: 8px;
+    }
+
+    .req-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .req-list li {
+      position: relative;
+      padding-left: 16px;
+      font-size: 13.5px;
+      color: var(--ink);
+    }
+
+    .req-list li::before {
+      content: "—";
+      position: absolute;
+      left: 0;
+      color: var(--ink-muted);
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 22px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* Modal Form */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(23, 23, 22, 0.35);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 60;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      width: 100%;
+      max-width: 560px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 28px;
+    }
+
+    .modal h2 {
+      font-family: 'Newsreader', serif;
+      font-size: 22px;
+      margin-bottom: 18px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .form-group.full {
+      grid-column: 1 / -1;
+    }
+
+    .form-group label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--ink-muted);
+    }
+
+    .form-group input,
+    .form-group textarea {
+      padding: 8px 10px;
+      border: 1px solid var(--border-strong);
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 13px;
+      color: var(--ink);
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 22px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    .empty-state {
+      padding: 48px 20px;
+      text-align: center;
+      color: var(--ink-muted);
+    }
+
+    @media (max-width: 768px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+      .container {
+        padding: 24px 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <div class="title-group">
+        <h1>Log Lamaran Kerja</h1>
+        <div class="subtitle">
+          <span class="status-dot" id="statusDot"></span>
+          <span id="statusText">Menghubungkan ke Google Sheets...</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="btn" onclick="loadData()">Muat Ulang</button>
+        <button class="btn btn-primary" onclick="openModal()">+ Catat Lamaran</button>
+      </div>
+    </header>
+
+    <div class="setup-banner" id="setupBanner">
+      <strong>Mode Pratinjau:</strong> URL Google Apps Script belum dipasang pada file <code>index.html</code>. Data yang tampil saat ini adalah contoh dari spreadsheet Anda.
+    </div>
+
+    <div class="toolbar">
+      <div class="search-box">
+        <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" id="searchInput" placeholder="Cari perusahaan, posisi, atau syarat..." oninput="renderTable()">
+      </div>
+      <div class="meta-count" id="rowCount">0 entri</div>
+    </div>
+
+    <div class="table-card">
+      <table>
+        <thead>
+          <tr>
+            <th>Perusahaan &amp; Posisi</th>
+            <th>Lokasi</th>
+            <th>Kontak PIC &amp; Kirim Ke</th>
+            <th>Estimasi Gaji</th>
+            <th>Batas Akhir</th>
+            <th>Versi CV</th>
+            <th>Syarat</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+          <tr>
+            <td colspan="7" class="empty-state">Memuat data lamaran...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Drawer Detail Syarat -->
+  <div class="drawer-backdrop" id="drawerBackdrop" onclick="closeDrawer(event)">
+    <div class="drawer" onclick="event.stopPropagation()">
+      <div>
+        <div class="drawer-header">
+          <div>
+            <div class="role-title" id="dPosisi" style="margin-bottom: 4px;"></div>
+            <h2 class="drawer-title" id="dPerusahaan"></h2>
+          </div>
+          <button class="close-btn" onclick="closeDrawer()">&times;</button>
+        </div>
+
+        <div class="detail-section">
+          <div class="detail-label">Syarat &amp; Kualifikasi</div>
+          <ul class="req-list" id="dSyarat"></ul>
+        </div>
+
+        <div class="detail-grid">
+          <div>
+            <div class="detail-label">Estimasi Gaji</div>
+            <div class="mono" id="dGaji">-</div>
+          </div>
+          <div>
+            <div class="detail-label">Batas Akhir</div>
+            <div class="mono" id="dBatas">-</div>
+          </div>
+          <div>
+            <div class="detail-label">Versi CV</div>
+            <div id="dCv">-</div>
+          </div>
+          <div>
+            <div class="detail-label">Lokasi</div>
+            <div id="dLokasi">-</div>
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <div class="detail-label">Kontak &amp; Pengiriman</div>
+          <div id="dKontak" style="display:flex; flex-direction:column; gap:6px;"></div>
+        </div>
+      </div>
+
+      <div style="margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--border);">
+        <button class="btn" style="width:100%; justify-content:center;" onclick="closeDrawer()">Tutup Panel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Tambah Data -->
+  <div class="modal-backdrop" id="modalBackdrop" onclick="closeModal(event)">
+    <div class="modal" onclick="event.stopPropagation()">
+      <h2>Catat Lamaran Baru</h2>
+      <form id="addForm" onsubmit="submitForm(event)">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Nama Perusahaan / Instansi *</label>
+            <input type="text" name="perusahaan" required placeholder="Contoh: Ortho dentis">
+          </div>
+          <div class="form-group">
+            <label>Posisi / Jabatan *</label>
+            <input type="text" name="posisi" required placeholder="Contoh: Konten Kreator">
+          </div>
+          <div class="form-group">
+            <label>Lokasi (Alamat / Link Maps)</label>
+            <input type="text" name="lokasi" placeholder="https://maps.app.goo.gl/...">
+          </div>
+          <div class="form-group">
+            <label>Kontak PIC (No. WA / Telepon)</label>
+            <input type="text" name="kontakPic" placeholder="628510786...">
+          </div>
+          <div class="form-group">
+            <label>Estimasi Gaji</label>
+            <input type="text" name="estimasiGaji" placeholder="Contoh: Rp 4.500.000">
+          </div>
+          <div class="form-group">
+            <label>Batas Akhir</label>
+            <input type="text" name="batasAkhir" placeholder="Contoh: 30 Nov 2026">
+          </div>
+          <div class="form-group">
+            <label>Versi CV</label>
+            <input type="text" name="versiCv" placeholder="Contoh: CV_Kreatif_v1">
+          </div>
+          <div class="form-group">
+            <label>Kirim ke (Email / Link Form)</label>
+            <input type="text" name="kirimKe" placeholder="hrd@perusahaan.com">
+          </div>
+          <div class="form-group full">
+            <label>Syarat &amp; Kualifikasi (pisahkan tiap poin dengan baris baru)</label>
+            <textarea name="syarat" rows="4" placeholder="- Minimal S1&#10;- Menguasai editing video"></textarea>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn" onclick="closeModal()">Batal</button>
+          <button type="submit" class="btn btn-primary" id="submitBtn">Simpan ke Sheets</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // =========================================================================
+    // TEMPEL URL WEB APP GOOGLE APPS SCRIPT ANDA DI BAWAH INI:
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxYTTiisVYp03GthisXSLN4gvJqmDl7npZto-Ga1cGVydVkal53rOL6TZZDothhp_o/exec';
+    // =========================================================================
+
+    let allRows = [];
+
+    // Data bawaan sesuai gambar jika SCRIPT_URL belum dikonfigurasi
+    const FALLBACK_DATA = [
+      {
+        perusahaan: 'Ortho dentis / dokter gigi',
+        posisi: 'konten kreator',
+        lokasi: 'https://maps.app.goo.gl/3vdLw9ahuyZXK7qr5',
+        kontakPic: '628510786 8783',
+        syarat: '-Diutamakan dari jurusan multimedia dan ilmu komunikasi\n-Kreatif, komunikatif & memiliki ide konten yang menarik\n-Aktif menggunakan Instagram dan TikTok\n-Memiliki kemampuan editing konten',
+        estimasiGaji: '-',
+        batasAkhir: '-',
+        versiCv: '',
+        kirimKe: 'suporthodentist@gmail.com'
+      }
+    ];
+
+    async function loadData() {
+      const statusDot = document.getElementById('statusDot');
+      const statusText = document.getElementById('statusText');
+      const banner = document.getElementById('setupBanner');
+
+      if (!SCRIPT_URL || SCRIPT_URL.includes('MASUKKAN_URL')) {
+        banner.style.display = 'block';
+        statusDot.classList.remove('connected');
+        statusText.textContent = 'Pratinjau lokal (belum terhubung ke Apps Script)';
+        allRows = FALLBACK_DATA;
+        renderTable();
+        return;
+      }
+
+      banner.style.display = 'none';
+      statusText.textContent = 'Menyinkronkan data...';
+
+      try {
+        const res = await fetch(SCRIPT_URL);
+        const json = await res.json();
+        if (json.status === 'success') {
+          allRows = json.data;
+          statusDot.classList.add('connected');
+          statusText.textContent = 'Terhubung ke Google Sheets';
+          renderTable();
+        } else {
+          throw new Error(json.message);
+        }
+      } catch (err) {
+        statusDot.classList.remove('connected');
+        statusText.textContent = 'Gagal memuat data: ' + err.message;
+      }
+    }
+
+    function formatLokasi(val) {
+      if (!val || val === '-') return '<span style="color:var(--ink-muted)">-</span>';
+      if (val.trim().startsWith('http')) {
+        return `<a href="${escapeHtml(val.trim())}" target="_blank" rel="noopener" class="link-editorial">Google Maps &#8599;</a>`;
+      }
+      return escapeHtml(val);
+    }
+
+    function formatKontak(pic, kirimKe) {
+      let parts = [];
+      if (pic && pic !== '-') {
+        const cleanNum = pic.replace(/[^0-9]/g, '');
+        if (cleanNum.length >= 9) {
+          const waNum = cleanNum.startsWith('0') ? '62' + cleanNum.slice(1) : cleanNum;
+          parts.push(`<a href="https://wa.me/${waNum}" target="_blank" rel="noopener" class="link-editorial mono">${escapeHtml(pic)}</a>`);
+        } else {
+          parts.push(`<span class="mono">${escapeHtml(pic)}</span>`);
+        }
+      }
+      if (kirimKe && kirimKe !== '-') {
+        if (kirimKe.includes('@') && !kirimKe.startsWith('http')) {
+          parts.push(`<a href="mailto:${escapeHtml(kirimKe.trim())}" class="link-editorial" style="font-size:12.5px;">${escapeHtml(kirimKe)}</a>`);
+        } else if (kirimKe.startsWith('http')) {
+          parts.push(`<a href="${escapeHtml(kirimKe.trim())}" target="_blank" rel="noopener" class="link-editorial">Tautan Lamar &#8599;</a>`);
+        } else {
+          parts.push(`<span>${escapeHtml(kirimKe)}</span>`);
+        }
+      }
+      return parts.length ? `<div class="contact-stack">${parts.join('')}</div>` : '<span style="color:var(--ink-muted)">-</span>';
+    }
+
+    function renderTable() {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      const tbody = document.getElementById('tableBody');
+
+      const filtered = allRows.filter(item => {
+        const haystack = `${item.perusahaan} ${item.posisi} ${item.syarat} ${item.lokasi}`.toLowerCase();
+        return haystack.includes(query);
+      });
+
+      document.getElementById('rowCount').textContent = `${filtered.length} entri`;
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="empty-state">Tidak ada data lamaran yang sesuai.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map((item, idx) => {
+        const originalIndex = allRows.indexOf(item);
+        const cvHtml = item.versiCv && item.versiCv !== '-'
+          ? `<span class="cv-tag">${escapeHtml(item.versiCv)}</span>`
+          : `<span style="color:var(--ink-muted)">—</span>`;
+
+        return `
+          <tr>
+            <td>
+              <div class="company-name">${escapeHtml(item.perusahaan || '-')}</div>
+              <div class="role-title">${escapeHtml(item.posisi || '-')}</div>
+            </td>
+            <td>${formatLokasi(item.lokasi)}</td>
+            <td>${formatKontak(item.kontakPic, item.kirimKe)}</td>
+            <td class="mono">${escapeHtml(item.estimasiGaji || '-')}</td>
+            <td class="mono">${escapeHtml(item.batasAkhir || '-')}</td>
+            <td>${cvHtml}</td>
+            <td>
+              <button class="btn-detail" onclick="openDrawer(${originalIndex})">Lihat Syarat</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function openDrawer(index) {
+      const item = allRows[index];
+      if (!item) return;
+
+      document.getElementById('dPosisi').textContent = item.posisi || '-';
+      document.getElementById('dPerusahaan').textContent = item.perusahaan || '-';
+      document.getElementById('dGaji').textContent = item.estimasiGaji || '-';
+      document.getElementById('dBatas').textContent = item.batasAkhir || '-';
+      document.getElementById('dCv').innerHTML = item.versiCv ? `<span class="cv-tag">${escapeHtml(item.versiCv)}</span>` : '-';
+      document.getElementById('dLokasi').innerHTML = formatLokasi(item.lokasi);
+      document.getElementById('dKontak').innerHTML = formatKontak(item.kontakPic, item.kirimKe);
+
+      const syaratList = document.getElementById('dSyarat');
+      const lines = (item.syarat || '-')
+        .split('\n')
+        .map(line => line.replace(/^[-•*]\s*/, '').trim())
+        .filter(Boolean);
+
+      syaratList.innerHTML = lines.length
+        ? lines.map(l => `<li>${escapeHtml(l)}</li>`).join('')
+        : '<li>Tidak ada catatan syarat.</li>';
+
+      document.getElementById('drawerBackdrop').classList.add('open');
+    }
+
+    function closeDrawer(e) {
+      if (!e || e.target === document.getElementById('drawerBackdrop')) {
+        document.getElementById('drawerBackdrop').classList.remove('open');
+      }
+    }
+
+    function openModal() {
+      document.getElementById('modalBackdrop').classList.add('open');
+    }
+
+    function closeModal(e) {
+      if (!e || e.target === document.getElementById('modalBackdrop')) {
+        document.getElementById('modalBackdrop').classList.remove('open');
+      }
+    }
+
+    async function submitForm(e) {
+      e.preventDefault();
+      if (!SCRIPT_URL || SCRIPT_URL.includes('MASUKKAN_URL')) {
+        alert('Pasang URL Web App Google Apps Script terlebih dahulu di dalam file index.html.');
+        return;
+      }
+
+      const btn = document.getElementById('submitBtn');
+      btn.disabled = true;
+      btn.textContent = 'Menyimpan...';
+
+      const formData = new FormData(e.target);
+      const payload = Object.fromEntries(formData.entries());
+
+      try {
+        const res = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(payload)
+        });
+        const json = await res.json();
+        if (json.status === 'success') {
+          e.target.reset();
+          closeModal();
+          await loadData();
+        } else {
+          alert('Gagal menyimpan: ' + json.message);
+        }
+      } catch (err) {
+        alert('Terjadi kesalahan jaringan: ' + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Simpan ke Sheets';
+      }
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    loadData();
+  </script>
+</body>
+</html>
