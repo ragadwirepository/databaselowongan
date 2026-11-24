@@ -9,17 +9,18 @@
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,500;6..72,600&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #F7F6F2;
+      --bg: #FDF7F9;
       --surface: #FFFFFF;
-      --surface-subtle: #F1EFEA;
-      --border: #E4E1D8;
-      --border-strong: #CFCBC0;
-      --ink: #171716;
-      --ink-muted: #66635B;
-      --accent: #1B3B2B;
-      --accent-hover: #132B1F;
-      --accent-soft: #EBF1EE;
-      --radius: 6px;
+      --surface-subtle: #FBEFF4;
+      --surface-hover: #FFF9FB;
+      --border: #F1DCE5;
+      --border-strong: #E4C2D0;
+      --ink: #2B1921;
+      --ink-muted: #7D626E;
+      --accent: #C94A7C;
+      --accent-hover: #AE3766;
+      --accent-soft: #FCE8F0;
+      --radius: 8px;
     }
 
     * {
@@ -37,10 +38,12 @@
       -webkit-font-smoothing: antialiased;
     }
 
+    /* Full kanan-kiri dengan padding tepi yang nyaman */
     .container {
-      max-width: 1240px;
+      width: 100%;
+      max-width: 100%;
       margin: 0 auto;
-      padding: 40px 24px 80px;
+      padding: 28px 36px 64px;
     }
 
     /* Header */
@@ -50,9 +53,9 @@
       justify-content: space-between;
       align-items: flex-end;
       gap: 20px;
-      padding-bottom: 28px;
+      padding-bottom: 22px;
       border-bottom: 1px solid var(--border);
-      margin-bottom: 24px;
+      margin-bottom: 20px;
     }
 
     .title-group h1 {
@@ -74,14 +77,15 @@
     }
 
     .status-dot {
-      width: 7px;
-      height: 7px;
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
-      background-color: #9CA3AF;
+      background-color: #D4B8C4;
     }
 
     .status-dot.connected {
-      background-color: #15803D;
+      background-color: #D94680;
+      box-shadow: 0 0 0 3px var(--accent-soft);
     }
 
     .header-actions {
@@ -104,11 +108,12 @@
       border: 1px solid var(--border-strong);
       background: var(--surface);
       color: var(--ink);
-      transition: background 0.15s, border-color 0.15s;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
     }
 
     .btn:hover {
       background: var(--surface-subtle);
+      border-color: var(--accent);
     }
 
     .btn-primary {
@@ -122,7 +127,7 @@
       border-color: var(--accent-hover);
     }
 
-    /* Toolbar */
+    /* Toolbar & Filter Tabs */
     .toolbar {
       display: flex;
       flex-wrap: wrap;
@@ -132,11 +137,19 @@
       margin-bottom: 16px;
     }
 
+    .toolbar-left {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+    }
+
     .search-box {
       position: relative;
+      min-width: 250px;
+      max-width: 360px;
       flex: 1;
-      min-width: 240px;
-      max-width: 380px;
     }
 
     .search-box input {
@@ -164,26 +177,59 @@
       pointer-events: none;
     }
 
+    .filter-pills {
+      display: inline-flex;
+      background: var(--surface);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius);
+      padding: 3px;
+      gap: 3px;
+    }
+
+    .filter-pill {
+      border: none;
+      background: transparent;
+      padding: 5px 12px;
+      border-radius: 5px;
+      font-family: inherit;
+      font-size: 12.5px;
+      font-weight: 500;
+      color: var(--ink-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .filter-pill:hover {
+      color: var(--ink);
+    }
+
+    .filter-pill.active {
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-weight: 600;
+    }
+
     .meta-count {
       font-family: 'JetBrains Mono', monospace;
       font-size: 12px;
       color: var(--ink-muted);
     }
 
-    /* Banner peringatan jika URL belum diisi */
+    /* Setup Banner */
     .setup-banner {
       display: none;
       padding: 12px 16px;
-      margin-bottom: 20px;
-      background: #FEF9EC;
-      border: 1px solid #EBD59B;
+      margin-bottom: 18px;
+      background: var(--accent-soft);
+      border: 1px solid var(--border-strong);
       border-radius: var(--radius);
       font-size: 13px;
-      color: #634B12;
+      color: var(--ink);
     }
 
     /* Table Wrapper */
     .table-card {
+      width: 100%;
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
@@ -197,7 +243,7 @@
     }
 
     th {
-      padding: 12px 16px;
+      padding: 13px 16px;
       font-size: 11px;
       font-weight: 600;
       text-transform: uppercase;
@@ -209,7 +255,7 @@
     }
 
     td {
-      padding: 16px;
+      padding: 15px 16px;
       border-bottom: 1px solid var(--border);
       vertical-align: top;
     }
@@ -219,7 +265,7 @@
     }
 
     tbody tr:hover {
-      background-color: #FAF9F6;
+      background-color: var(--surface-hover);
     }
 
     .company-name {
@@ -244,21 +290,74 @@
       text-decoration: none;
       font-weight: 500;
       border-bottom: 1px solid transparent;
+      word-break: break-word;
     }
 
     .link-editorial:hover {
       border-bottom-color: var(--accent);
     }
 
+    /* Tombol / Link Canva yang bisa diklik */
+    .cv-link-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 11px;
+      font-size: 12px;
+      font-weight: 500;
+      background: var(--accent-soft);
+      border: 1px solid var(--border-strong);
+      border-radius: 999px;
+      color: var(--accent);
+      text-decoration: none;
+      white-space: nowrap;
+      transition: all 0.15s;
+    }
+
+    .cv-link-btn:hover {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #FFFFFF;
+    }
+
     .cv-tag {
       display: inline-block;
-      padding: 2px 8px;
+      padding: 3px 9px;
       font-family: 'JetBrains Mono', monospace;
       font-size: 11.5px;
       background: var(--surface-subtle);
       border: 1px solid var(--border-strong);
-      border-radius: 4px;
+      border-radius: 5px;
       color: var(--ink);
+    }
+
+    /* Status Selector di Tabel */
+    .status-select {
+      appearance: none;
+      padding: 5px 26px 5px 10px;
+      border-radius: 999px;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid var(--border-strong);
+      background-repeat: no-repeat;
+      background-position: right 9px center;
+      background-size: 10px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237D626E' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      outline: none;
+    }
+
+    .status-select.is-kirim {
+      background-color: var(--accent-soft);
+      color: var(--accent);
+      border-color: #E3A7BF;
+    }
+
+    .status-select.is-belum {
+      background-color: #F7F1F3;
+      color: var(--ink-muted);
+      border-color: var(--border-strong);
     }
 
     .contact-stack {
@@ -268,24 +367,29 @@
     }
 
     .btn-detail {
-      padding: 5px 10px;
+      padding: 6px 12px;
       font-size: 12px;
-      background: transparent;
+      font-weight: 500;
+      background: var(--surface);
       border: 1px solid var(--border-strong);
-      border-radius: 4px;
+      border-radius: 6px;
       color: var(--ink);
       cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s;
     }
 
     .btn-detail:hover {
       background: var(--surface-subtle);
+      border-color: var(--accent);
+      color: var(--accent);
     }
 
     /* Slide-Over Drawer */
     .drawer-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(23, 23, 22, 0.32);
+      background: rgba(43, 25, 33, 0.35);
       display: none;
       justify-content: flex-end;
       z-index: 50;
@@ -297,7 +401,7 @@
 
     .drawer {
       width: 100%;
-      max-width: 480px;
+      max-width: 500px;
       background: var(--surface);
       height: 100%;
       padding: 32px;
@@ -326,7 +430,7 @@
     .close-btn {
       background: none;
       border: none;
-      font-size: 20px;
+      font-size: 22px;
       cursor: pointer;
       color: var(--ink-muted);
       padding: 4px;
@@ -360,10 +464,11 @@
     }
 
     .req-list li::before {
-      content: "—";
+      content: "•";
       position: absolute;
       left: 0;
-      color: var(--ink-muted);
+      color: var(--accent);
+      font-weight: bold;
     }
 
     .detail-grid {
@@ -379,7 +484,7 @@
     .modal-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(23, 23, 22, 0.35);
+      background: rgba(43, 25, 33, 0.35);
       display: none;
       align-items: center;
       justify-content: center;
@@ -396,7 +501,7 @@
       border: 1px solid var(--border);
       border-radius: var(--radius);
       width: 100%;
-      max-width: 560px;
+      max-width: 580px;
       max-height: 90vh;
       overflow-y: auto;
       padding: 28px;
@@ -404,7 +509,7 @@
 
     .modal h2 {
       font-family: 'Newsreader', serif;
-      font-size: 22px;
+      font-size: 23px;
       margin-bottom: 18px;
     }
 
@@ -431,17 +536,20 @@
     }
 
     .form-group input,
-    .form-group textarea {
+    .form-group textarea,
+    .form-group select {
       padding: 8px 10px;
       border: 1px solid var(--border-strong);
-      border-radius: 4px;
+      border-radius: 6px;
       font-family: inherit;
       font-size: 13px;
       color: var(--ink);
+      background: var(--surface);
     }
 
     .form-group input:focus,
-    .form-group textarea:focus {
+    .form-group textarea:focus,
+    .form-group select:focus {
       outline: none;
       border-color: var(--accent);
     }
@@ -466,7 +574,7 @@
         grid-template-columns: 1fr;
       }
       .container {
-        padding: 24px 16px;
+        padding: 20px 16px 48px;
       }
     }
   </style>
@@ -479,7 +587,7 @@
         <h1>Log Lamaran Kerja</h1>
         <div class="subtitle">
           <span class="status-dot" id="statusDot"></span>
-          <span id="statusText">Menghubungkan ke Google Sheets...</span>
+          <span id="statusText">Menghubungkan...</span>
         </div>
       </div>
       <div class="header-actions">
@@ -489,17 +597,26 @@
     </header>
 
     <div class="setup-banner" id="setupBanner">
-      <strong>Mode Pratinjau:</strong> URL Google Apps Script belum dipasang pada file <code>index.html</code>. Data yang tampil saat ini adalah contoh dari spreadsheet Anda.
+      <strong>Mode Pratinjau:</strong> URL Google Apps Script belum dipasang pada file <code>index.html</code>.
     </div>
 
     <div class="toolbar">
-      <div class="search-box">
-        <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="11" cy="11" r="8"></circle>
-          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-        </svg>
-        <input type="text" id="searchInput" placeholder="Cari perusahaan, posisi, atau syarat..." oninput="renderTable()">
+      <div class="toolbar-left">
+        <div class="search-box">
+          <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="text" id="searchInput" placeholder="Cari perusahaan, posisi, atau syarat..." oninput="renderTable()">
+        </div>
+
+        <div class="filter-pills" id="statusFilters">
+          <button type="button" class="filter-pill active" onclick="setStatusFilter('ALL', this)">Semua</button>
+          <button type="button" class="filter-pill" onclick="setStatusFilter('KIRIM', this)">Sudah Kirim</button>
+          <button type="button" class="filter-pill" onclick="setStatusFilter('BELUM', this)">Belum Kirim</button>
+        </div>
       </div>
+
       <div class="meta-count" id="rowCount">0 entri</div>
     </div>
 
@@ -513,12 +630,13 @@
             <th>Estimasi Gaji</th>
             <th>Batas Akhir</th>
             <th>Versi CV</th>
+            <th>Status</th>
             <th>Syarat</th>
           </tr>
         </thead>
         <tbody id="tableBody">
           <tr>
-            <td colspan="7" class="empty-state">Memuat data lamaran...</td>
+            <td colspan="8" class="empty-state">Memuat data lamaran...</td>
           </tr>
         </tbody>
       </table>
@@ -544,16 +662,20 @@
 
         <div class="detail-grid">
           <div>
+            <div class="detail-label">Status Kirim</div>
+            <div id="dStatus">-</div>
+          </div>
+          <div>
+            <div class="detail-label">Versi CV</div>
+            <div id="dCv">-</div>
+          </div>
+          <div>
             <div class="detail-label">Estimasi Gaji</div>
             <div class="mono" id="dGaji">-</div>
           </div>
           <div>
             <div class="detail-label">Batas Akhir</div>
             <div class="mono" id="dBatas">-</div>
-          </div>
-          <div>
-            <div class="detail-label">Versi CV</div>
-            <div id="dCv">-</div>
           </div>
           <div>
             <div class="detail-label">Lokasi</div>
@@ -597,23 +719,30 @@
           </div>
           <div class="form-group">
             <label>Estimasi Gaji</label>
-            <input type="text" name="estimasiGaji" placeholder="Contoh: Rp 4.500.000">
+            <input type="text" name="estimasiGaji" placeholder="Contoh: Rp 2.930.000">
           </div>
           <div class="form-group">
             <label>Batas Akhir</label>
-            <input type="text" name="batasAkhir" placeholder="Contoh: 30 Nov 2026">
+            <input type="text" name="batasAkhir" placeholder="Contoh: 21 November">
           </div>
           <div class="form-group">
-            <label>Versi CV</label>
-            <input type="text" name="versiCv" placeholder="Contoh: CV_Kreatif_v1">
+            <label>Versi CV (Link Canva / Nama File)</label>
+            <input type="text" name="versiCv" placeholder="https://canva.link/...">
           </div>
           <div class="form-group">
-            <label>Kirim ke (Email / Link Form)</label>
+            <label>Status Kirim Lamaran</label>
+            <select name="status">
+              <option value="BELUM">BELUM</option>
+              <option value="KIRIM">KIRIM</option>
+            </select>
+          </div>
+          <div class="form-group full">
+            <label>Kirim ke (Email / Link Form / Subjek)</label>
             <input type="text" name="kirimKe" placeholder="hrd@perusahaan.com">
           </div>
           <div class="form-group full">
             <label>Syarat &amp; Kualifikasi (pisahkan tiap poin dengan baris baru)</label>
-            <textarea name="syarat" rows="4" placeholder="- Minimal S1&#10;- Menguasai editing video"></textarea>
+            <textarea name="syarat" rows="4" placeholder="- Minimal SMA/Sederajat&#10;- Berkomunikasi dengan baik"></textarea>
           </div>
         </div>
         <div class="modal-actions">
@@ -627,23 +756,38 @@
   <script>
     // =========================================================================
     // TEMPEL URL WEB APP GOOGLE APPS SCRIPT ANDA DI BAWAH INI:
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxYTTiisVYp03GthisXSLN4gvJqmDl7npZto-Ga1cGVydVkal53rOL6TZZDothhp_o/exec';
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyFETqxoT66GHZ4EZNJEBXhNS-bq4B5YX6c14ihBmLBaXYkUCBcOFT17Oe1k1hE0FSI/exec';
     // =========================================================================
 
     let allRows = [];
+    let currentFilter = 'ALL';
 
-    // Data bawaan sesuai gambar jika SCRIPT_URL belum dikonfigurasi
     const FALLBACK_DATA = [
       {
+        rowNumber: 3,
         perusahaan: 'Ortho dentis / dokter gigi',
         posisi: 'konten kreator',
         lokasi: 'https://maps.app.goo.gl/3vdLw9ahuyZXK7qr5',
-        kontakPic: '628510786 8783',
+        kontakPic: '6285107868783',
         syarat: '-Diutamakan dari jurusan multimedia dan ilmu komunikasi\n-Kreatif, komunikatif & memiliki ide konten yang menarik\n-Aktif menggunakan Instagram dan TikTok\n-Memiliki kemampuan editing konten',
         estimasiGaji: '-',
         batasAkhir: '-',
-        versiCv: '',
-        kirimKe: 'suporthodentist@gmail.com'
+        versiCv: 'https://canva.link/hf8mxohjjeducho',
+        kirimKe: 'suporthodentist@gmail.com',
+        status: 'KIRIM'
+      },
+      {
+        rowNumber: 4,
+        perusahaan: 'Momoyo Kajen',
+        posisi: 'Crew Outlet',
+        lokasi: '-',
+        kontakPic: '6285201460669',
+        syarat: 'Berpengalaman dalam bidang F&B diutamakan\nBerpenampilan rapi, sopan, dan komunikatif\nMampu bekerja sama dalam tim\nSiap bekerja dengan sistem shift',
+        estimasiGaji: '-',
+        batasAkhir: '-',
+        versiCv: 'https://canva.link/qbara1swlq7q7db',
+        kirimKe: 'MOMOYO.KAJEN@GMAIL.COM',
+        status: 'BELUM'
       }
     ];
 
@@ -655,14 +799,14 @@
       if (!SCRIPT_URL || SCRIPT_URL.includes('MASUKKAN_URL')) {
         banner.style.display = 'block';
         statusDot.classList.remove('connected');
-        statusText.textContent = 'Pratinjau lokal (belum terhubung ke Apps Script)';
+        statusText.textContent = 'Pratinjau lokal';
         allRows = FALLBACK_DATA;
         renderTable();
         return;
       }
 
       banner.style.display = 'none';
-      statusText.textContent = 'Menyinkronkan data...';
+      statusText.textContent = 'Menyinkronkan...';
 
       try {
         const res = await fetch(SCRIPT_URL);
@@ -670,23 +814,43 @@
         if (json.status === 'success') {
           allRows = json.data;
           statusDot.classList.add('connected');
-          statusText.textContent = 'Terhubung ke Google Sheets';
+          statusText.textContent = 'Terhubung';
           renderTable();
         } else {
           throw new Error(json.message);
         }
       } catch (err) {
         statusDot.classList.remove('connected');
-        statusText.textContent = 'Gagal memuat data: ' + err.message;
+        statusText.textContent = 'Gagal memuat: ' + err.message;
       }
+    }
+
+    function setStatusFilter(filter, btnEl) {
+      currentFilter = filter;
+      document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
+      btnEl.classList.add('active');
+      renderTable();
     }
 
     function formatLokasi(val) {
       if (!val || val === '-') return '<span style="color:var(--ink-muted)">-</span>';
-      if (val.trim().startsWith('http')) {
-        return `<a href="${escapeHtml(val.trim())}" target="_blank" rel="noopener" class="link-editorial">Google Maps &#8599;</a>`;
+      const trimmed = val.trim();
+      if (trimmed.startsWith('http')) {
+        return `<a href="${escapeHtml(trimmed)}" target="_blank" rel="noopener noreferrer" class="link-editorial">Google Maps &#8599;</a>`;
       }
-      return escapeHtml(val);
+      return escapeHtml(trimmed);
+    }
+
+    function formatVersiCv(val) {
+      if (!val || val === '-') return '<span style="color:var(--ink-muted)">—</span>';
+      const trimmed = val.trim();
+      if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+        return `<a href="${escapeHtml(trimmed)}" target="_blank" rel="noopener noreferrer" class="cv-link-btn" title="${escapeHtml(trimmed)}">Buka CV Canva &#8599;</a>`;
+      }
+      if (trimmed.includes('canva.link') || trimmed.includes('canva.com')) {
+        return `<a href="https://${escapeHtml(trimmed)}" target="_blank" rel="noopener noreferrer" class="cv-link-btn" title="${escapeHtml(trimmed)}">Buka CV Canva &#8599;</a>`;
+      }
+      return `<span class="cv-tag">${escapeHtml(trimmed)}</span>`;
     }
 
     function formatKontak(pic, kirimKe) {
@@ -695,21 +859,38 @@
         const cleanNum = pic.replace(/[^0-9]/g, '');
         if (cleanNum.length >= 9) {
           const waNum = cleanNum.startsWith('0') ? '62' + cleanNum.slice(1) : cleanNum;
-          parts.push(`<a href="https://wa.me/${waNum}" target="_blank" rel="noopener" class="link-editorial mono">${escapeHtml(pic)}</a>`);
+          parts.push(`<a href="https://wa.me/${waNum}" target="_blank" rel="noopener noreferrer" class="link-editorial mono">${escapeHtml(pic)}</a>`);
         } else {
           parts.push(`<span class="mono">${escapeHtml(pic)}</span>`);
         }
       }
       if (kirimKe && kirimKe !== '-') {
-        if (kirimKe.includes('@') && !kirimKe.startsWith('http')) {
-          parts.push(`<a href="mailto:${escapeHtml(kirimKe.trim())}" class="link-editorial" style="font-size:12.5px;">${escapeHtml(kirimKe)}</a>`);
-        } else if (kirimKe.startsWith('http')) {
-          parts.push(`<a href="${escapeHtml(kirimKe.trim())}" target="_blank" rel="noopener" class="link-editorial">Tautan Lamar &#8599;</a>`);
+        const trimmed = kirimKe.trim();
+        const emailMatch = trimmed.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
+        if (emailMatch) {
+          const email = emailMatch[0];
+          const extraNote = trimmed.replace(email, '').trim();
+          parts.push(
+            `<div>
+              <a href="mailto:${escapeHtml(email)}" class="link-editorial" style="font-size:12.5px;">${escapeHtml(email)}</a>
+              ${extraNote ? `<div style="font-size:11.5px; color:var(--ink-muted); margin-top:2px;">${escapeHtml(extraNote)}</div>` : ''}
+            </div>`
+          );
+        } else if (trimmed.startsWith('http')) {
+          parts.push(`<a href="${escapeHtml(trimmed)}" target="_blank" rel="noopener noreferrer" class="link-editorial">Tautan Lamar &#8599;</a>`);
+        } else if (trimmed.includes('.com/') || trimmed.includes('.id/')) {
+          parts.push(`<a href="https://${escapeHtml(trimmed)}" target="_blank" rel="noopener noreferrer" class="link-editorial" style="font-size:12.5px;">${escapeHtml(trimmed)} &#8599;</a>`);
         } else {
-          parts.push(`<span>${escapeHtml(kirimKe)}</span>`);
+          parts.push(`<span style="font-size:12.5px;">${escapeHtml(trimmed)}</span>`);
         }
       }
       return parts.length ? `<div class="contact-stack">${parts.join('')}</div>` : '<span style="color:var(--ink-muted)">-</span>';
+    }
+
+    function normalizeStatus(statusVal) {
+      const upper = (statusVal || '').trim().toUpperCase();
+      if (upper === 'KIRIM' || upper === 'SUDAH' || upper === 'TERKIRIM') return 'KIRIM';
+      return 'BELUM';
     }
 
     function renderTable() {
@@ -717,22 +898,24 @@
       const tbody = document.getElementById('tableBody');
 
       const filtered = allRows.filter(item => {
-        const haystack = `${item.perusahaan} ${item.posisi} ${item.syarat} ${item.lokasi}`.toLowerCase();
+        const normStatus = normalizeStatus(item.status);
+        if (currentFilter !== 'ALL' && normStatus !== currentFilter) return false;
+
+        const haystack = `${item.perusahaan} ${item.posisi} ${item.syarat} ${item.lokasi} ${item.status}`.toLowerCase();
         return haystack.includes(query);
       });
 
       document.getElementById('rowCount').textContent = `${filtered.length} entri`;
 
       if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="empty-state">Tidak ada data lamaran yang sesuai.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8" class="empty-state">Tidak ada data lamaran yang sesuai.</td></tr>`;
         return;
       }
 
-      tbody.innerHTML = filtered.map((item, idx) => {
+      tbody.innerHTML = filtered.map((item) => {
         const originalIndex = allRows.indexOf(item);
-        const cvHtml = item.versiCv && item.versiCv !== '-'
-          ? `<span class="cv-tag">${escapeHtml(item.versiCv)}</span>`
-          : `<span style="color:var(--ink-muted)">—</span>`;
+        const normStatus = normalizeStatus(item.status);
+        const statusClass = normStatus === 'KIRIM' ? 'is-kirim' : 'is-belum';
 
         return `
           <tr>
@@ -744,7 +927,13 @@
             <td>${formatKontak(item.kontakPic, item.kirimKe)}</td>
             <td class="mono">${escapeHtml(item.estimasiGaji || '-')}</td>
             <td class="mono">${escapeHtml(item.batasAkhir || '-')}</td>
-            <td>${cvHtml}</td>
+            <td>${formatVersiCv(item.versiCv)}</td>
+            <td>
+              <select class="status-select ${statusClass}" onchange="updateRowStatus(${originalIndex}, this.value)">
+                <option value="BELUM" ${normStatus === 'BELUM' ? 'selected' : ''}>BELUM</option>
+                <option value="KIRIM" ${normStatus === 'KIRIM' ? 'selected' : ''}>KIRIM</option>
+              </select>
+            </td>
             <td>
               <button class="btn-detail" onclick="openDrawer(${originalIndex})">Lihat Syarat</button>
             </td>
@@ -753,17 +942,50 @@
       }).join('');
     }
 
+    async function updateRowStatus(index, newStatus) {
+      const item = allRows[index];
+      if (!item) return;
+
+      const oldStatus = item.status;
+      item.status = newStatus;
+      renderTable();
+
+      if (!SCRIPT_URL || SCRIPT_URL.includes('MASUKKAN_URL')) return;
+
+      try {
+        const res = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({
+            action: 'updateStatus',
+            rowNumber: item.rowNumber,
+            status: newStatus
+          })
+        });
+        const json = await res.json();
+        if (json.status !== 'success') {
+          throw new Error(json.message);
+        }
+      } catch (err) {
+        item.status = oldStatus;
+        renderTable();
+        alert('Gagal memperbarui status: ' + err.message);
+      }
+    }
+
     function openDrawer(index) {
       const item = allRows[index];
       if (!item) return;
 
+      const normStatus = normalizeStatus(item.status);
       document.getElementById('dPosisi').textContent = item.posisi || '-';
       document.getElementById('dPerusahaan').textContent = item.perusahaan || '-';
       document.getElementById('dGaji').textContent = item.estimasiGaji || '-';
       document.getElementById('dBatas').textContent = item.batasAkhir || '-';
-      document.getElementById('dCv').innerHTML = item.versiCv ? `<span class="cv-tag">${escapeHtml(item.versiCv)}</span>` : '-';
+      document.getElementById('dCv').innerHTML = formatVersiCv(item.versiCv);
       document.getElementById('dLokasi').innerHTML = formatLokasi(item.lokasi);
       document.getElementById('dKontak').innerHTML = formatKontak(item.kontakPic, item.kirimKe);
+      document.getElementById('dStatus').innerHTML = `<span class="cv-tag" style="${normStatus === 'KIRIM' ? 'background:var(--accent-soft); color:var(--accent); border-color:#E3A7BF; font-weight:600;' : ''}">${normStatus}</span>`;
 
       const syaratList = document.getElementById('dSyarat');
       const lines = (item.syarat || '-')
