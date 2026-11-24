@@ -38,7 +38,6 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* Full kanan-kiri dengan padding tepi yang nyaman */
     .container {
       width: 100%;
       max-width: 100%;
@@ -125,6 +124,11 @@
     .btn-primary:hover {
       background: var(--accent-hover);
       border-color: var(--accent-hover);
+    }
+
+    .btn-sm {
+      padding: 5px 10px;
+      font-size: 12px;
     }
 
     /* Toolbar & Filter Tabs */
@@ -297,7 +301,7 @@
       border-bottom-color: var(--accent);
     }
 
-    /* Tombol / Link Canva yang bisa diklik */
+    /* Tombol / Link Canva */
     .cv-link-btn {
       display: inline-flex;
       align-items: center;
@@ -383,6 +387,41 @@
       background: var(--surface-subtle);
       border-color: var(--accent);
       color: var(--accent);
+    }
+
+    /* Tombol Kirim Lamaran (Gmail) */
+    .btn-apply {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      background: var(--accent);
+      border: 1px solid var(--accent);
+      border-radius: 6px;
+      color: #FFFFFF;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s;
+    }
+
+    .btn-apply:hover {
+      background: var(--accent-hover);
+      border-color: var(--accent-hover);
+    }
+
+    .btn-apply.is-secondary {
+      background: var(--surface);
+      color: var(--ink-muted);
+      border-color: var(--border-strong);
+      font-weight: 500;
+    }
+
+    .btn-apply.is-secondary:hover {
+      background: var(--surface-subtle);
+      color: var(--accent);
+      border-color: var(--accent);
     }
 
     /* Slide-Over Drawer */
@@ -501,16 +540,29 @@
       border: 1px solid var(--border);
       border-radius: var(--radius);
       width: 100%;
-      max-width: 580px;
-      max-height: 90vh;
+      max-width: 620px;
+      max-height: 92vh;
       overflow-y: auto;
       padding: 28px;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 18px;
     }
 
     .modal h2 {
       font-family: 'Newsreader', serif;
       font-size: 23px;
-      margin-bottom: 18px;
+      line-height: 1.2;
+    }
+
+    .modal-subtitle {
+      font-size: 12.5px;
+      color: var(--ink-muted);
+      margin-top: 4px;
     }
 
     .form-grid {
@@ -533,6 +585,9 @@
       font-size: 12px;
       font-weight: 500;
       color: var(--ink-muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
     .form-group input,
@@ -545,6 +600,7 @@
       font-size: 13px;
       color: var(--ink);
       background: var(--surface);
+      line-height: 1.45;
     }
 
     .form-group input:focus,
@@ -554,11 +610,52 @@
       border-color: var(--accent);
     }
 
+    .hint-box {
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px 12px;
+      font-size: 12px;
+      color: var(--ink-muted);
+      margin-top: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12.5px;
+      font-weight: 500;
+      color: var(--ink);
+      cursor: pointer;
+    }
+
+    .checkbox-row input[type="checkbox"] {
+      accent-color: var(--accent);
+      width: 15px;
+      height: 15px;
+      cursor: pointer;
+    }
+
+    .reset-template-link {
+      background: none;
+      border: none;
+      color: var(--accent);
+      font-family: inherit;
+      font-size: 11.5px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
     .modal-actions {
       display: flex;
       justify-content: flex-end;
       gap: 10px;
-      margin-top: 22px;
+      margin-top: 20px;
       padding-top: 16px;
       border-top: 1px solid var(--border);
     }
@@ -627,16 +724,15 @@
             <th>Perusahaan &amp; Posisi</th>
             <th>Lokasi</th>
             <th>Kontak PIC &amp; Kirim Ke</th>
-            <th>Estimasi Gaji</th>
-            <th>Batas Akhir</th>
             <th>Versi CV</th>
             <th>Status</th>
             <th>Syarat</th>
+            <th>Kirim Lamaran</th>
           </tr>
         </thead>
         <tbody id="tableBody">
           <tr>
-            <td colspan="8" class="empty-state">Memuat data lamaran...</td>
+            <td colspan="7" class="empty-state">Memuat data lamaran...</td>
           </tr>
         </tbody>
       </table>
@@ -669,15 +765,7 @@
             <div class="detail-label">Versi CV</div>
             <div id="dCv">-</div>
           </div>
-          <div>
-            <div class="detail-label">Estimasi Gaji</div>
-            <div class="mono" id="dGaji">-</div>
-          </div>
-          <div>
-            <div class="detail-label">Batas Akhir</div>
-            <div class="mono" id="dBatas">-</div>
-          </div>
-          <div>
+          <div style="grid-column: 1 / -1;">
             <div class="detail-label">Lokasi</div>
             <div id="dLokasi">-</div>
           </div>
@@ -689,7 +777,8 @@
         </div>
       </div>
 
-      <div style="margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--border);">
+      <div style="margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 8px;">
+        <button class="btn btn-primary" id="dApplyBtn" style="width:100%; justify-content:center;">Kirim Lamaran via Gmail</button>
         <button class="btn" style="width:100%; justify-content:center;" onclick="closeDrawer()">Tutup Panel</button>
       </div>
     </div>
@@ -698,7 +787,10 @@
   <!-- Modal Tambah Data -->
   <div class="modal-backdrop" id="modalBackdrop" onclick="closeModal(event)">
     <div class="modal" onclick="event.stopPropagation()">
-      <h2>Catat Lamaran Baru</h2>
+      <div class="modal-header">
+        <h2>Catat Lamaran Baru</h2>
+        <button class="close-btn" onclick="closeModal()">&times;</button>
+      </div>
       <form id="addForm" onsubmit="submitForm(event)">
         <div class="form-grid">
           <div class="form-group">
@@ -716,14 +808,6 @@
           <div class="form-group">
             <label>Kontak PIC (No. WA / Telepon)</label>
             <input type="text" name="kontakPic" placeholder="628510786...">
-          </div>
-          <div class="form-group">
-            <label>Estimasi Gaji</label>
-            <input type="text" name="estimasiGaji" placeholder="Contoh: Rp 2.930.000">
-          </div>
-          <div class="form-group">
-            <label>Batas Akhir</label>
-            <input type="text" name="batasAkhir" placeholder="Contoh: 21 November">
           </div>
           <div class="form-group">
             <label>Versi CV (Link Canva / Nama File)</label>
@@ -753,14 +837,88 @@
     </div>
   </div>
 
+  <!-- Modal Kirim Lamaran ke Gmail -->
+  <div class="modal-backdrop" id="emailModalBackdrop" onclick="closeEmailModal(event)">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <div>
+          <h2>Kirim Lamaran via Gmail</h2>
+          <div class="modal-subtitle" id="emailTargetSubtitle">Siapkan surat lamaran sebelum diarahkan ke Gmail</div>
+        </div>
+        <button class="close-btn" onclick="closeEmailModal()">&times;</button>
+      </div>
+
+      <form id="emailForm" onsubmit="redirectToGmail(event)">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Email Tujuan (HRD / Perusahaan) *</label>
+            <input type="email" id="emTo" required placeholder="hrd@perusahaan.com">
+          </div>
+          <div class="form-group">
+            <label>Subjek Email *</label>
+            <input type="text" id="emSubject" required placeholder="Lamaran Kerja - Posisi - Nama Anda">
+          </div>
+          <div class="form-group">
+            <label>Nama Lengkap Anda *</label>
+            <input type="text" id="emName" required placeholder="Contoh: Raga Dwi" oninput="handleProfileFieldChange()">
+          </div>
+          <div class="form-group">
+            <label>No. WhatsApp / Telepon *</label>
+            <input type="text" id="emPhone" required placeholder="Contoh: 0851-xxxx-xxxx" oninput="handleProfileFieldChange()">
+          </div>
+          <div class="form-group">
+            <label>Pendidikan / Domisili Singkat</label>
+            <input type="text" id="emBio" placeholder="Contoh: S1 Komunikasi • Pekalongan" oninput="handleProfileFieldChange()">
+          </div>
+          <div class="form-group">
+            <label>Link CV / Portofolio (Canva / Drive)</label>
+            <input type="text" id="emCvLink" placeholder="https://canva.link/..." oninput="handleProfileFieldChange()">
+          </div>
+          <div class="form-group full">
+            <label>
+              <span>Isi Surat Lamaran (Body Email) *</span>
+              <button type="button" class="reset-template-link" onclick="regenerateEmailBody()">Muat Ulang Template</button>
+            </label>
+            <textarea id="emBody" rows="9" required oninput="isBodyManuallyEdited = true"></textarea>
+          </div>
+        </div>
+
+        <div class="hint-box">
+          <label class="checkbox-row">
+            <input type="checkbox" id="emAutoStatus" checked>
+            <span>Otomatis ubah status lamaran di log menjadi <strong>KIRIM</strong> setelah membuka Gmail</span>
+          </label>
+          <div>
+            <strong>Catatan:</strong> Profil Anda (Nama, No. WA, Pendidikan/Domisili) disimpan otomatis di browser ini untuk lamaran berikutnya. Jangan lupa lampirkan file PDF CV di Gmail jika diperlukan.
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn" onclick="closeEmailModal()">Batal</button>
+          <button type="submit" class="btn btn-primary">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="22" y1="2" x2="11" y2="13"></line>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+            </svg>
+            Buka &amp; Isi di Gmail &#8599;
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script>
     // =========================================================================
     // TEMPEL URL WEB APP GOOGLE APPS SCRIPT ANDA DI BAWAH INI:
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyFETqxoT66GHZ4EZNJEBXhNS-bq4B5YX6c14ihBmLBaXYkUCBcOFT17Oe1k1hE0FSI/exec';
     // =========================================================================
 
+    const PROFILE_STORAGE_KEY = 'job_log_applicant_profile_v1';
+
     let allRows = [];
     let currentFilter = 'ALL';
+    let activeEmailRowIndex = null;
+    let isBodyManuallyEdited = false;
 
     const FALLBACK_DATA = [
       {
@@ -832,6 +990,18 @@
       renderTable();
     }
 
+    function extractEmail(text) {
+      if (!text || text === '-') return '';
+      const match = String(text).match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
+      return match ? match[0] : '';
+    }
+
+    function extractSubjectHint(text) {
+      if (!text || text === '-') return '';
+      const match = String(text).match(/SUBJEK\s*:\s*(.+)/i);
+      return match ? match[1].trim() : '';
+    }
+
     function formatLokasi(val) {
       if (!val || val === '-') return '<span style="color:var(--ink-muted)">-</span>';
       const trimmed = val.trim();
@@ -866,9 +1036,8 @@
       }
       if (kirimKe && kirimKe !== '-') {
         const trimmed = kirimKe.trim();
-        const emailMatch = trimmed.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
-        if (emailMatch) {
-          const email = emailMatch[0];
+        const email = extractEmail(trimmed);
+        if (email) {
           const extraNote = trimmed.replace(email, '').trim();
           parts.push(
             `<div>
@@ -901,14 +1070,14 @@
         const normStatus = normalizeStatus(item.status);
         if (currentFilter !== 'ALL' && normStatus !== currentFilter) return false;
 
-        const haystack = `${item.perusahaan} ${item.posisi} ${item.syarat} ${item.lokasi} ${item.status}`.toLowerCase();
+        const haystack = `${item.perusahaan} ${item.posisi} ${item.syarat} ${item.lokasi} ${item.kirimKe} ${item.status}`.toLowerCase();
         return haystack.includes(query);
       });
 
       document.getElementById('rowCount').textContent = `${filtered.length} entri`;
 
       if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="8" class="empty-state">Tidak ada data lamaran yang sesuai.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" class="empty-state">Tidak ada data lamaran yang sesuai.</td></tr>`;
         return;
       }
 
@@ -916,6 +1085,7 @@
         const originalIndex = allRows.indexOf(item);
         const normStatus = normalizeStatus(item.status);
         const statusClass = normStatus === 'KIRIM' ? 'is-kirim' : 'is-belum';
+        const hasEmail = Boolean(extractEmail(item.kirimKe));
 
         return `
           <tr>
@@ -925,8 +1095,6 @@
             </td>
             <td>${formatLokasi(item.lokasi)}</td>
             <td>${formatKontak(item.kontakPic, item.kirimKe)}</td>
-            <td class="mono">${escapeHtml(item.estimasiGaji || '-')}</td>
-            <td class="mono">${escapeHtml(item.batasAkhir || '-')}</td>
             <td>${formatVersiCv(item.versiCv)}</td>
             <td>
               <select class="status-select ${statusClass}" onchange="updateRowStatus(${originalIndex}, this.value)">
@@ -936,6 +1104,15 @@
             </td>
             <td>
               <button class="btn-detail" onclick="openDrawer(${originalIndex})">Lihat Syarat</button>
+            </td>
+            <td>
+              <button class="btn-apply ${hasEmail ? '' : 'is-secondary'}" onclick="openEmailModal(${originalIndex})" title="${hasEmail ? 'Buat & kirim email lamaran ke Gmail' : 'Isi email tujuan secara manual'}">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                  <polyline points="22,6 12,13 2,6"></polyline>
+                </svg>
+                Kirim Email
+              </button>
             </td>
           </tr>
         `;
@@ -973,6 +1150,168 @@
       }
     }
 
+    /* ========================
+       FITUR KIRIM LAMARAN GMAIL
+       ======================== */
+    function getSavedProfile() {
+      try {
+        return JSON.parse(localStorage.getItem(PROFILE_STORAGE_KEY)) || {};
+      } catch {
+        return {};
+      }
+    }
+
+    function saveProfile(profile) {
+      try {
+        localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profile));
+      } catch {
+        // Abaikan jika storage diblokir
+      }
+    }
+
+    function buildDefaultSubject(item, name) {
+      const subjectHint = extractSubjectHint(item.kirimKe);
+      if (subjectHint) return subjectHint;
+
+      const posisi = (item.posisi || 'Posisi Terkait').trim();
+      const cleanName = (name || '').trim();
+      return cleanName
+        ? `Lamaran Kerja - ${posisi} - ${cleanName}`
+        : `Lamaran Kerja - ${posisi}`;
+    }
+
+    function buildEmailTemplate(item, profile) {
+      const perusahaan = (item.perusahaan || 'Perusahaan').trim();
+      const posisi = (item.posisi || 'posisi yang tersedia').trim();
+      const nama = (profile.name || '[Nama Lengkap Anda]').trim();
+      const phone = (profile.phone || '[Nomor WhatsApp Anda]').trim();
+      const bio = (profile.bio || '').trim();
+      const cvLink = (profile.cvLink || '').trim();
+
+      const bioLine = bio ? `\nPendidikan / Domisili: ${bio}` : '';
+      const cvLine = cvLink && cvLink !== '-'
+        ? `\n\nSebagai bahan pertimbangan, berikut tautan CV/Portofolio saya:\n${cvLink}`
+        : '\n\nSebagai bahan pertimbangan, saya lampirkan CV dan dokumen pendukung pada email ini.';
+
+      return `Yth. Bapak/Ibu HRD / Tim Rekrutmen
+${perusahaan}
+
+Dengan hormat,
+
+Melalui email ini, saya bermaksud mengajukan lamaran pekerjaan untuk posisi ${posisi} di ${perusahaan}.
+
+Berikut data singkat saya:
+Nama Lengkap : ${nama}
+No. WhatsApp : ${phone}${bioLine}
+
+Saya memiliki motivasi kerja yang tinggi, mampu bekerja secara mandiri maupun dalam tim, serta siap beradaptasi dengan cepat untuk memberikan kontribusi terbaik bagi ${perusahaan}.${cvLine}
+
+Besar harapan saya untuk dapat diberikan kesempatan mengikuti tahap seleksi selanjutnya. Atas perhatian dan kesempatan yang Bapak/Ibu berikan, saya ucapkan terima kasih.
+
+Hormat saya,
+${nama}
+${phone}`;
+    }
+
+    function openEmailModal(index) {
+      const item = allRows[index];
+      if (!item) return;
+
+      activeEmailRowIndex = index;
+      isBodyManuallyEdited = false;
+
+      const profile = getSavedProfile();
+      const emailTo = extractEmail(item.kirimKe);
+      const rowCv = (item.versiCv && item.versiCv !== '-') ? item.versiCv.trim() : '';
+      const resolvedCv = rowCv.startsWith('http') ? rowCv : (rowCv.includes('canva.') ? `https://${rowCv}` : (profile.cvLink || ''));
+
+      document.getElementById('emailTargetSubtitle').textContent = `${item.perusahaan || '-'} • ${item.posisi || '-'}`;
+      document.getElementById('emTo').value = emailTo;
+      document.getElementById('emName').value = profile.name || '';
+      document.getElementById('emPhone').value = profile.phone || '';
+      document.getElementById('emBio').value = profile.bio || '';
+      document.getElementById('emCvLink').value = resolvedCv;
+
+      document.getElementById('emSubject').value = buildDefaultSubject(item, profile.name);
+      document.getElementById('emBody').value = buildEmailTemplate(item, {
+        name: profile.name,
+        phone: profile.phone,
+        bio: profile.bio,
+        cvLink: resolvedCv
+      });
+
+      document.getElementById('emAutoStatus').checked = true;
+      document.getElementById('emailModalBackdrop').classList.add('open');
+    }
+
+    function handleProfileFieldChange() {
+      if (activeEmailRowIndex === null) return;
+      const item = allRows[activeEmailRowIndex];
+      const name = document.getElementById('emName').value;
+      const phone = document.getElementById('emPhone').value;
+      const bio = document.getElementById('emBio').value;
+      const cvLink = document.getElementById('emCvLink').value;
+
+      // Update subjek otomatis jika tidak ada instruksi subjek khusus dari lowongan
+      if (!extractSubjectHint(item.kirimKe)) {
+        document.getElementById('emSubject').value = buildDefaultSubject(item, name);
+      }
+
+      // Perbarui body otomatis selama user belum mengedit isi surat secara manual
+      if (!isBodyManuallyEdited) {
+        document.getElementById('emBody').value = buildEmailTemplate(item, { name, phone, bio, cvLink });
+      }
+    }
+
+    function regenerateEmailBody() {
+      if (activeEmailRowIndex === null) return;
+      const item = allRows[activeEmailRowIndex];
+      isBodyManuallyEdited = false;
+      document.getElementById('emBody').value = buildEmailTemplate(item, {
+        name: document.getElementById('emName').value,
+        phone: document.getElementById('emPhone').value,
+        bio: document.getElementById('emBio').value,
+        cvLink: document.getElementById('emCvLink').value
+      });
+    }
+
+    function closeEmailModal(e) {
+      if (!e || e.target === document.getElementById('emailModalBackdrop')) {
+        document.getElementById('emailModalBackdrop').classList.remove('open');
+      }
+    }
+
+    async function redirectToGmail(e) {
+      e.preventDefault();
+      const to = document.getElementById('emTo').value.trim();
+      const subject = document.getElementById('emSubject').value.trim();
+      const name = document.getElementById('emName').value.trim();
+      const phone = document.getElementById('emPhone').value.trim();
+      const bio = document.getElementById('emBio').value.trim();
+      const cvLink = document.getElementById('emCvLink').value.trim();
+      const body = document.getElementById('emBody').value;
+      const autoStatus = document.getElementById('emAutoStatus').checked;
+
+      // Simpan profil pelamar untuk pengisian berikutnya
+      saveProfile({ name, phone, bio, cvLink });
+
+      // Direct ke Gmail Compose dengan To, Subject, dan Body terisi
+      const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(to)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      window.open(gmailUrl, '_blank', 'noopener,noreferrer');
+
+      const targetIndex = activeEmailRowIndex;
+      closeEmailModal();
+
+      if (autoStatus && targetIndex !== null && allRows[targetIndex]) {
+        if (normalizeStatus(allRows[targetIndex].status) !== 'KIRIM') {
+          await updateRowStatus(targetIndex, 'KIRIM');
+        }
+      }
+    }
+
+    /* ========================
+       DRAWER & MODAL TAMBAH
+       ======================== */
     function openDrawer(index) {
       const item = allRows[index];
       if (!item) return;
@@ -980,8 +1319,6 @@
       const normStatus = normalizeStatus(item.status);
       document.getElementById('dPosisi').textContent = item.posisi || '-';
       document.getElementById('dPerusahaan').textContent = item.perusahaan || '-';
-      document.getElementById('dGaji').textContent = item.estimasiGaji || '-';
-      document.getElementById('dBatas').textContent = item.batasAkhir || '-';
       document.getElementById('dCv').innerHTML = formatVersiCv(item.versiCv);
       document.getElementById('dLokasi').innerHTML = formatLokasi(item.lokasi);
       document.getElementById('dKontak').innerHTML = formatKontak(item.kontakPic, item.kirimKe);
@@ -996,6 +1333,11 @@
       syaratList.innerHTML = lines.length
         ? lines.map(l => `<li>${escapeHtml(l)}</li>`).join('')
         : '<li>Tidak ada catatan syarat.</li>';
+
+      document.getElementById('dApplyBtn').onclick = () => {
+        closeDrawer();
+        openEmailModal(index);
+      };
 
       document.getElementById('drawerBackdrop').classList.add('open');
     }
@@ -1029,6 +1371,9 @@
 
       const formData = new FormData(e.target);
       const payload = Object.fromEntries(formData.entries());
+      // Pertahankan field default agar struktur kolom Google Sheets tetap sinkron
+      payload.estimasiGaji = '-';
+      payload.batasAkhir = '-';
 
       try {
         const res = await fetch(SCRIPT_URL, {
