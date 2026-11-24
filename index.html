@@ -20,6 +20,10 @@
       --accent: #C94A7C;
       --accent-hover: #AE3766;
       --accent-soft: #FCE8F0;
+      --wa: #1E8E5A;
+      --wa-hover: #177248;
+      --wa-soft: #E9F7F0;
+      --wa-border: #B7E4CE;
       --radius: 8px;
     }
 
@@ -126,9 +130,15 @@
       border-color: var(--accent-hover);
     }
 
-    .btn-sm {
-      padding: 5px 10px;
-      font-size: 12px;
+    .btn-wa-primary {
+      background: var(--wa);
+      color: #FFFFFF;
+      border-color: var(--wa);
+    }
+
+    .btn-wa-primary:hover {
+      background: var(--wa-hover);
+      border-color: var(--wa-hover);
     }
 
     /* Toolbar & Filter Tabs */
@@ -389,7 +399,7 @@
       color: var(--accent);
     }
 
-    /* Tombol Kirim Lamaran (Gmail) */
+    /* Tombol Kirim Lamaran (Email & WhatsApp) */
     .btn-apply {
       display: inline-flex;
       align-items: center;
@@ -409,6 +419,17 @@
     .btn-apply:hover {
       background: var(--accent-hover);
       border-color: var(--accent-hover);
+    }
+
+    .btn-apply.is-wa {
+      background: var(--wa);
+      border-color: var(--wa);
+      color: #FFFFFF;
+    }
+
+    .btn-apply.is-wa:hover {
+      background: var(--wa-hover);
+      border-color: var(--wa-hover);
     }
 
     .btn-apply.is-secondary {
@@ -550,7 +571,7 @@
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
     }
 
     .modal h2 {
@@ -563,6 +584,47 @@
       font-size: 12.5px;
       color: var(--ink-muted);
       margin-top: 4px;
+    }
+
+    /* Switcher Channel di Modal Kirim Lamaran */
+    .channel-switcher {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 4px;
+      margin-bottom: 18px;
+    }
+
+    .channel-tab {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 7px 12px;
+      border: none;
+      border-radius: 6px;
+      background: transparent;
+      font-family: inherit;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--ink-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .channel-tab.active-email {
+      background: var(--surface);
+      color: var(--accent);
+      box-shadow: 0 1px 2px rgba(43, 25, 33, 0.08);
+    }
+
+    .channel-tab.active-wa {
+      background: var(--surface);
+      color: var(--wa);
+      box-shadow: 0 1px 2px rgba(43, 25, 33, 0.08);
     }
 
     .form-grid {
@@ -778,7 +840,7 @@
       </div>
 
       <div style="margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 8px;">
-        <button class="btn btn-primary" id="dApplyBtn" style="width:100%; justify-content:center;">Kirim Lamaran via Gmail</button>
+        <button class="btn btn-primary" id="dApplyBtn" style="width:100%; justify-content:center;">Kirim Lamaran</button>
         <button class="btn" style="width:100%; justify-content:center;" onclick="closeDrawer()">Tutup Panel</button>
       </div>
     </div>
@@ -821,8 +883,8 @@
             </select>
           </div>
           <div class="form-group full">
-            <label>Kirim ke (Email / Link Form / Subjek)</label>
-            <input type="text" name="kirimKe" placeholder="hrd@perusahaan.com">
+            <label>Kirim ke (Email / No. WA / Link Form)</label>
+            <input type="text" name="kirimKe" placeholder="hrd@perusahaan.com atau 62851...">
           </div>
           <div class="form-group full">
             <label>Syarat &amp; Kualifikasi (pisahkan tiap poin dengan baris baru)</label>
@@ -837,27 +899,54 @@
     </div>
   </div>
 
-  <!-- Modal Kirim Lamaran ke Gmail -->
-  <div class="modal-backdrop" id="emailModalBackdrop" onclick="closeEmailModal(event)">
+  <!-- Modal Kirim Lamaran (Gmail & WhatsApp) -->
+  <div class="modal-backdrop" id="applyModalBackdrop" onclick="closeApplyModal(event)">
     <div class="modal" onclick="event.stopPropagation()">
       <div class="modal-header">
         <div>
-          <h2>Kirim Lamaran via Gmail</h2>
-          <div class="modal-subtitle" id="emailTargetSubtitle">Siapkan surat lamaran sebelum diarahkan ke Gmail</div>
+          <h2 id="applyModalTitle">Kirim Lamaran via Gmail</h2>
+          <div class="modal-subtitle" id="applyTargetSubtitle">Siapkan pesan lamaran sebelum dikirim</div>
         </div>
-        <button class="close-btn" onclick="closeEmailModal()">&times;</button>
+        <button class="close-btn" onclick="closeApplyModal()">&times;</button>
       </div>
 
-      <form id="emailForm" onsubmit="redirectToGmail(event)">
+      <!-- Switcher Saluran Pengiriman -->
+      <div class="channel-switcher">
+        <button type="button" class="channel-tab" id="tabChannelEmail" onclick="switchApplyChannel('email')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+            <polyline points="22,6 12,13 2,6"></polyline>
+          </svg>
+          Email (Gmail)
+        </button>
+        <button type="button" class="channel-tab" id="tabChannelWa" onclick="switchApplyChannel('whatsapp')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+          </svg>
+          WhatsApp
+        </button>
+      </div>
+
+      <form id="applyForm" onsubmit="submitApplication(event)">
         <div class="form-grid">
-          <div class="form-group">
+          <!-- Field Tujuan Email -->
+          <div class="form-group" id="groupEmailTo">
             <label>Email Tujuan (HRD / Perusahaan) *</label>
-            <input type="email" id="emTo" required placeholder="hrd@perusahaan.com">
+            <input type="email" id="emTo" placeholder="hrd@perusahaan.com">
           </div>
-          <div class="form-group">
+          <!-- Field Subjek Email -->
+          <div class="form-group" id="groupEmailSubject">
             <label>Subjek Email *</label>
-            <input type="text" id="emSubject" required placeholder="Lamaran Kerja - Posisi - Nama Anda">
+            <input type="text" id="emSubject" placeholder="Lamaran Kerja - Posisi - Nama Anda">
           </div>
+
+          <!-- Field Tujuan WhatsApp -->
+          <div class="form-group full" id="groupWaTo" style="display: none;">
+            <label>Nomor WhatsApp Tujuan (HRD / PIC) *</label>
+            <input type="text" id="waTo" class="mono" placeholder="Contoh: 6285727611111 atau 085727611111">
+          </div>
+
+          <!-- Profil Pelamar (Tersimpan Otomatis) -->
           <div class="form-group">
             <label>Nama Lengkap Anda *</label>
             <input type="text" id="emName" required placeholder="Contoh: Raga Dwi" oninput="handleProfileFieldChange()">
@@ -874,10 +963,11 @@
             <label>Link CV / Portofolio (Canva / Drive)</label>
             <input type="text" id="emCvLink" placeholder="https://canva.link/..." oninput="handleProfileFieldChange()">
           </div>
+
           <div class="form-group full">
             <label>
-              <span>Isi Surat Lamaran (Body Email) *</span>
-              <button type="button" class="reset-template-link" onclick="regenerateEmailBody()">Muat Ulang Template</button>
+              <span id="bodyFieldLabel">Isi Surat Lamaran (Body Email) *</span>
+              <button type="button" class="reset-template-link" onclick="regenerateMessageBody()">Muat Ulang Template</button>
             </label>
             <textarea id="emBody" rows="9" required oninput="isBodyManuallyEdited = true"></textarea>
           </div>
@@ -886,20 +976,16 @@
         <div class="hint-box">
           <label class="checkbox-row">
             <input type="checkbox" id="emAutoStatus" checked>
-            <span>Otomatis ubah status lamaran di log menjadi <strong>KIRIM</strong> setelah membuka Gmail</span>
+            <span id="autoStatusText">Otomatis ubah status lamaran di log menjadi <strong>KIRIM</strong> setelah membuka Gmail</span>
           </label>
-          <div>
+          <div id="channelFootnote">
             <strong>Catatan:</strong> Profil Anda (Nama, No. WA, Pendidikan/Domisili) disimpan otomatis di browser ini untuk lamaran berikutnya. Jangan lupa lampirkan file PDF CV di Gmail jika diperlukan.
           </div>
         </div>
 
         <div class="modal-actions">
-          <button type="button" class="btn" onclick="closeEmailModal()">Batal</button>
-          <button type="submit" class="btn btn-primary">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <line x1="22" y1="2" x2="11" y2="13"></line>
-              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-            </svg>
+          <button type="button" class="btn" onclick="closeApplyModal()">Batal</button>
+          <button type="submit" class="btn btn-primary" id="applySubmitBtn">
             Buka &amp; Isi di Gmail &#8599;
           </button>
         </div>
@@ -917,7 +1003,8 @@
 
     let allRows = [];
     let currentFilter = 'ALL';
-    let activeEmailRowIndex = null;
+    let activeRowIndex = null;
+    let currentApplyChannel = 'email'; // 'email' | 'whatsapp'
     let isBodyManuallyEdited = false;
 
     const FALLBACK_DATA = [
@@ -945,6 +1032,19 @@
         batasAkhir: '-',
         versiCv: 'https://canva.link/qbara1swlq7q7db',
         kirimKe: 'MOMOYO.KAJEN@GMAIL.COM',
+        status: 'BELUM'
+      },
+      {
+        rowNumber: 5,
+        perusahaan: 'Devicell',
+        posisi: 'Frontliner',
+        lokasi: 'https://maps.google.com',
+        kontakPic: '6285727611111',
+        syarat: 'Komunikatif dan berpenampilan menarik',
+        estimasiGaji: '-',
+        batasAkhir: '-',
+        versiCv: 'https://canva.link/example',
+        kirimKe: '6285727611111',
         status: 'BELUM'
       }
     ];
@@ -996,6 +1096,31 @@
       return match ? match[0] : '';
     }
 
+    function normalizeWaNumber(raw) {
+      if (!raw || raw === '-') return '';
+      const str = String(raw).trim();
+      // Jangan salah mengira angka di dalam URL/email sebagai nomor HP
+      if (str.includes('@') || str.startsWith('http')) return '';
+      const digits = str.replace(/[^0-9]/g, '');
+      if (digits.length < 9 || digits.length > 15) return '';
+      if (digits.startsWith('0')) return '62' + digits.slice(1);
+      if (digits.startsWith('8')) return '62' + digits;
+      return digits;
+    }
+
+    function getRowContactInfo(item) {
+      const email = extractEmail(item.kirimKe) || extractEmail(item.kontakPic);
+      const waNumber = normalizeWaNumber(item.kirimKe) || normalizeWaNumber(item.kontakPic);
+
+      if (email) {
+        return { preferredChannel: 'email', email, waNumber };
+      }
+      if (waNumber) {
+        return { preferredChannel: 'whatsapp', email: '', waNumber };
+      }
+      return { preferredChannel: 'manual', email: '', waNumber: '' };
+    }
+
     function extractSubjectHint(text) {
       if (!text || text === '-') return '';
       const match = String(text).match(/SUBJEK\s*:\s*(.+)/i);
@@ -1026,9 +1151,8 @@
     function formatKontak(pic, kirimKe) {
       let parts = [];
       if (pic && pic !== '-') {
-        const cleanNum = pic.replace(/[^0-9]/g, '');
-        if (cleanNum.length >= 9) {
-          const waNum = cleanNum.startsWith('0') ? '62' + cleanNum.slice(1) : cleanNum;
+        const waNum = normalizeWaNumber(pic);
+        if (waNum) {
           parts.push(`<a href="https://wa.me/${waNum}" target="_blank" rel="noopener noreferrer" class="link-editorial mono">${escapeHtml(pic)}</a>`);
         } else {
           parts.push(`<span class="mono">${escapeHtml(pic)}</span>`);
@@ -1070,7 +1194,7 @@
         const normStatus = normalizeStatus(item.status);
         if (currentFilter !== 'ALL' && normStatus !== currentFilter) return false;
 
-        const haystack = `${item.perusahaan} ${item.posisi} ${item.syarat} ${item.lokasi} ${item.kirimKe} ${item.status}`.toLowerCase();
+        const haystack = `${item.perusahaan} ${item.posisi} ${item.syarat} ${item.lokasi} ${item.kirimKe} ${item.kontakPic} ${item.status}`.toLowerCase();
         return haystack.includes(query);
       });
 
@@ -1085,7 +1209,39 @@
         const originalIndex = allRows.indexOf(item);
         const normStatus = normalizeStatus(item.status);
         const statusClass = normStatus === 'KIRIM' ? 'is-kirim' : 'is-belum';
-        const hasEmail = Boolean(extractEmail(item.kirimKe));
+        const contactInfo = getRowContactInfo(item);
+
+        let actionButtonHtml = '';
+        if (contactInfo.preferredChannel === 'email') {
+          actionButtonHtml = `
+            <button class="btn-apply" onclick="openApplyModal(${originalIndex}, 'email')" title="Buat & kirim email lamaran ke ${escapeHtml(contactInfo.email)}">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                <polyline points="22,6 12,13 2,6"></polyline>
+              </svg>
+              Kirim Email
+            </button>
+          `;
+        } else if (contactInfo.preferredChannel === 'whatsapp') {
+          actionButtonHtml = `
+            <button class="btn-apply is-wa" onclick="openApplyModal(${originalIndex}, 'whatsapp')" title="Kirim pesan lamaran ke WhatsApp ${escapeHtml(contactInfo.waNumber)}">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+              </svg>
+              Kirim WA
+            </button>
+          `;
+        } else {
+          actionButtonHtml = `
+            <button class="btn-apply is-secondary" onclick="openApplyModal(${originalIndex}, 'email')" title="Isi email atau nomor WhatsApp tujuan secara manual">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <line x1="22" y1="2" x2="11" y2="13"></line>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+              </svg>
+              Kirim Lamaran
+            </button>
+          `;
+        }
 
         return `
           <tr>
@@ -1105,15 +1261,7 @@
             <td>
               <button class="btn-detail" onclick="openDrawer(${originalIndex})">Lihat Syarat</button>
             </td>
-            <td>
-              <button class="btn-apply ${hasEmail ? '' : 'is-secondary'}" onclick="openEmailModal(${originalIndex})" title="${hasEmail ? 'Buat & kirim email lamaran ke Gmail' : 'Isi email tujuan secara manual'}">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                  <polyline points="22,6 12,13 2,6"></polyline>
-                </svg>
-                Kirim Email
-              </button>
-            </td>
+            <td>${actionButtonHtml}</td>
           </tr>
         `;
       }).join('');
@@ -1150,9 +1298,9 @@
       }
     }
 
-    /* ========================
-       FITUR KIRIM LAMARAN GMAIL
-       ======================== */
+    /* ======================================
+       FITUR KIRIM LAMARAN (GMAIL & WHATSAPP)
+       ====================================== */
     function getSavedProfile() {
       try {
         return JSON.parse(localStorage.getItem(PROFILE_STORAGE_KEY)) || {};
@@ -1213,78 +1361,146 @@ ${nama}
 ${phone}`;
     }
 
-    function openEmailModal(index) {
+    function buildWhatsAppTemplate(item, profile) {
+      const perusahaan = (item.perusahaan || 'Perusahaan').trim();
+      const posisi = (item.posisi || 'posisi yang tersedia').trim();
+      const nama = (profile.name || '[Nama Lengkap Anda]').trim();
+      const phone = (profile.phone || '[Nomor WhatsApp Anda]').trim();
+      const bio = (profile.bio || '').trim();
+      const cvLink = (profile.cvLink || '').trim();
+
+      const bioLine = bio ? `\n• Pendidikan/Domisili: ${bio}` : '';
+      const cvLine = cvLink && cvLink !== '-'
+        ? `\n\nBerikut tautan CV & Portofolio saya:\n${cvLink}\n(File PDF CV juga siap saya kirimkan di chat ini).`
+        : '\n\nIzin melampirkan file CV dan berkas pendukung saya setelah pesan ini.';
+
+      return `Halo Bapak/Ibu HRD / Tim Rekrutmen *${perusahaan}*, selamat pagi/siang.
+
+Perkenalkan, saya *${nama}*. Melalui pesan ini saya bermaksud mengajukan lamaran kerja untuk posisi *${posisi}* di *${perusahaan}*.
+
+Data singkat saya:
+• Nama: ${nama}
+• No. WA: ${phone}${bioLine}${cvLine}
+
+Besar harapan saya untuk dapat diberikan kesempatan mengikuti tahap wawancara/seleksi selanjutnya. Terima kasih atas waktu dan perhatian Bapak/Ibu.`;
+    }
+
+    function openApplyModal(index, forcedChannel) {
       const item = allRows[index];
       if (!item) return;
 
-      activeEmailRowIndex = index;
+      activeRowIndex = index;
       isBodyManuallyEdited = false;
 
       const profile = getSavedProfile();
-      const emailTo = extractEmail(item.kirimKe);
+      const contactInfo = getRowContactInfo(item);
       const rowCv = (item.versiCv && item.versiCv !== '-') ? item.versiCv.trim() : '';
       const resolvedCv = rowCv.startsWith('http') ? rowCv : (rowCv.includes('canva.') ? `https://${rowCv}` : (profile.cvLink || ''));
 
-      document.getElementById('emailTargetSubtitle').textContent = `${item.perusahaan || '-'} • ${item.posisi || '-'}`;
-      document.getElementById('emTo').value = emailTo;
+      document.getElementById('applyTargetSubtitle').textContent = `${item.perusahaan || '-'} • ${item.posisi || '-'}`;
+      document.getElementById('emTo').value = contactInfo.email;
+      document.getElementById('waTo').value = contactInfo.waNumber;
       document.getElementById('emName').value = profile.name || '';
       document.getElementById('emPhone').value = profile.phone || '';
       document.getElementById('emBio').value = profile.bio || '';
       document.getElementById('emCvLink').value = resolvedCv;
-
       document.getElementById('emSubject').value = buildDefaultSubject(item, profile.name);
-      document.getElementById('emBody').value = buildEmailTemplate(item, {
-        name: profile.name,
-        phone: profile.phone,
-        bio: profile.bio,
-        cvLink: resolvedCv
-      });
-
       document.getElementById('emAutoStatus').checked = true;
-      document.getElementById('emailModalBackdrop').classList.add('open');
+
+      const initialChannel = forcedChannel || (contactInfo.preferredChannel === 'whatsapp' ? 'whatsapp' : 'email');
+      switchApplyChannel(initialChannel, true);
+
+      document.getElementById('applyModalBackdrop').classList.add('open');
+    }
+
+    function switchApplyChannel(channel, forceResetBody = false) {
+      currentApplyChannel = channel;
+      const isWa = channel === 'whatsapp';
+
+      // Update tampilan tab switcher
+      const tabEmail = document.getElementById('tabChannelEmail');
+      const tabWa = document.getElementById('tabChannelWa');
+      tabEmail.className = 'channel-tab' + (!isWa ? ' active-email' : '');
+      tabWa.className = 'channel-tab' + (isWa ? ' active-wa' : '');
+
+      // Tampilkan / sembunyikan input sesuai channel
+      document.getElementById('groupEmailTo').style.display = isWa ? 'none' : 'flex';
+      document.getElementById('groupEmailSubject').style.display = isWa ? 'none' : 'flex';
+      document.getElementById('groupWaTo').style.display = isWa ? 'flex' : 'none';
+
+      document.getElementById('emTo').required = !isWa;
+      document.getElementById('emSubject').required = !isWa;
+      document.getElementById('waTo').required = isWa;
+
+      // Update judul, label, dan tombol submit
+      document.getElementById('applyModalTitle').textContent = isWa
+        ? 'Kirim Lamaran via WhatsApp'
+        : 'Kirim Lamaran via Gmail';
+      document.getElementById('bodyFieldLabel').textContent = isWa
+        ? 'Isi Pesan WhatsApp *'
+        : 'Isi Surat Lamaran (Body Email) *';
+      document.getElementById('autoStatusText').innerHTML = isWa
+        ? 'Otomatis ubah status lamaran di log menjadi <strong>KIRIM</strong> setelah membuka WhatsApp'
+        : 'Otomatis ubah status lamaran di log menjadi <strong>KIRIM</strong> setelah membuka Gmail';
+      document.getElementById('channelFootnote').innerHTML = isWa
+        ? '<strong>Catatan:</strong> Profil Anda tersimpan otomatis di browser. Setelah WhatsApp terbuka, Anda dapat langsung melampirkan file PDF CV di kolom chat.'
+        : '<strong>Catatan:</strong> Profil Anda (Nama, No. WA, Pendidikan/Domisili) disimpan otomatis di browser ini. Jangan lupa lampirkan file PDF CV di Gmail jika diperlukan.';
+
+      const submitBtn = document.getElementById('applySubmitBtn');
+      if (isWa) {
+        submitBtn.className = 'btn btn-wa-primary';
+        submitBtn.innerHTML = 'Buka &amp; Kirim di WhatsApp &#8599;';
+      } else {
+        submitBtn.className = 'btn btn-primary';
+        submitBtn.innerHTML = 'Buka &amp; Isi di Gmail &#8599;';
+      }
+
+      if (forceResetBody || !isBodyManuallyEdited) {
+        isBodyManuallyEdited = false;
+        regenerateMessageBody();
+      }
     }
 
     function handleProfileFieldChange() {
-      if (activeEmailRowIndex === null) return;
-      const item = allRows[activeEmailRowIndex];
+      if (activeRowIndex === null) return;
+      const item = allRows[activeRowIndex];
       const name = document.getElementById('emName').value;
-      const phone = document.getElementById('emPhone').value;
-      const bio = document.getElementById('emBio').value;
-      const cvLink = document.getElementById('emCvLink').value;
 
-      // Update subjek otomatis jika tidak ada instruksi subjek khusus dari lowongan
       if (!extractSubjectHint(item.kirimKe)) {
         document.getElementById('emSubject').value = buildDefaultSubject(item, name);
       }
 
-      // Perbarui body otomatis selama user belum mengedit isi surat secara manual
       if (!isBodyManuallyEdited) {
-        document.getElementById('emBody').value = buildEmailTemplate(item, { name, phone, bio, cvLink });
+        regenerateMessageBody();
       }
     }
 
-    function regenerateEmailBody() {
-      if (activeEmailRowIndex === null) return;
-      const item = allRows[activeEmailRowIndex];
+    function regenerateMessageBody() {
+      if (activeRowIndex === null) return;
+      const item = allRows[activeRowIndex];
       isBodyManuallyEdited = false;
-      document.getElementById('emBody').value = buildEmailTemplate(item, {
+
+      const profile = {
         name: document.getElementById('emName').value,
         phone: document.getElementById('emPhone').value,
         bio: document.getElementById('emBio').value,
         cvLink: document.getElementById('emCvLink').value
-      });
+      };
+
+      document.getElementById('emBody').value = currentApplyChannel === 'whatsapp'
+        ? buildWhatsAppTemplate(item, profile)
+        : buildEmailTemplate(item, profile);
     }
 
-    function closeEmailModal(e) {
-      if (!e || e.target === document.getElementById('emailModalBackdrop')) {
-        document.getElementById('emailModalBackdrop').classList.remove('open');
+    function closeApplyModal(e) {
+      if (!e || e.target === document.getElementById('applyModalBackdrop')) {
+        document.getElementById('applyModalBackdrop').classList.remove('open');
       }
     }
 
-    async function redirectToGmail(e) {
+    async function submitApplication(e) {
       e.preventDefault();
-      const to = document.getElementById('emTo').value.trim();
-      const subject = document.getElementById('emSubject').value.trim();
+
       const name = document.getElementById('emName').value.trim();
       const phone = document.getElementById('emPhone').value.trim();
       const bio = document.getElementById('emBio').value.trim();
@@ -1295,12 +1511,24 @@ ${phone}`;
       // Simpan profil pelamar untuk pengisian berikutnya
       saveProfile({ name, phone, bio, cvLink });
 
-      // Direct ke Gmail Compose dengan To, Subject, dan Body terisi
-      const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(to)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-      window.open(gmailUrl, '_blank', 'noopener,noreferrer');
+      if (currentApplyChannel === 'whatsapp') {
+        const rawWa = document.getElementById('waTo').value.trim();
+        const targetWa = normalizeWaNumber(rawWa);
+        if (!targetWa) {
+          alert('Nomor WhatsApp tujuan tidak valid. Pastikan berisi minimal 9 digit angka (contoh: 62857xxxx atau 0857xxxx).');
+          return;
+        }
+        const waUrl = `https://wa.me/${targetWa}?text=${encodeURIComponent(body)}`;
+        window.open(waUrl, '_blank', 'noopener,noreferrer');
+      } else {
+        const to = document.getElementById('emTo').value.trim();
+        const subject = document.getElementById('emSubject').value.trim();
+        const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(to)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        window.open(gmailUrl, '_blank', 'noopener,noreferrer');
+      }
 
-      const targetIndex = activeEmailRowIndex;
-      closeEmailModal();
+      const targetIndex = activeRowIndex;
+      closeApplyModal();
 
       if (autoStatus && targetIndex !== null && allRows[targetIndex]) {
         if (normalizeStatus(allRows[targetIndex].status) !== 'KIRIM') {
@@ -1317,6 +1545,8 @@ ${phone}`;
       if (!item) return;
 
       const normStatus = normalizeStatus(item.status);
+      const contactInfo = getRowContactInfo(item);
+
       document.getElementById('dPosisi').textContent = item.posisi || '-';
       document.getElementById('dPerusahaan').textContent = item.perusahaan || '-';
       document.getElementById('dCv').innerHTML = formatVersiCv(item.versiCv);
@@ -1334,10 +1564,22 @@ ${phone}`;
         ? lines.map(l => `<li>${escapeHtml(l)}</li>`).join('')
         : '<li>Tidak ada catatan syarat.</li>';
 
-      document.getElementById('dApplyBtn').onclick = () => {
-        closeDrawer();
-        openEmailModal(index);
-      };
+      const dApplyBtn = document.getElementById('dApplyBtn');
+      if (contactInfo.preferredChannel === 'whatsapp') {
+        dApplyBtn.className = 'btn btn-wa-primary';
+        dApplyBtn.textContent = 'Kirim Lamaran via WhatsApp';
+        dApplyBtn.onclick = () => {
+          closeDrawer();
+          openApplyModal(index, 'whatsapp');
+        };
+      } else {
+        dApplyBtn.className = 'btn btn-primary';
+        dApplyBtn.textContent = 'Kirim Lamaran via Gmail';
+        dApplyBtn.onclick = () => {
+          closeDrawer();
+          openApplyModal(index, 'email');
+        };
+      }
 
       document.getElementById('drawerBackdrop').classList.add('open');
     }
@@ -1371,7 +1613,6 @@ ${phone}`;
 
       const formData = new FormData(e.target);
       const payload = Object.fromEntries(formData.entries());
-      // Pertahankan field default agar struktur kolom Google Sheets tetap sinkron
       payload.estimasiGaji = '-';
       payload.batasAkhir = '-';
 
